@@ -1,6 +1,8 @@
 [package]
 name = "git_track"
 version = "0.1.0"
-authors = ["Alex Rousseau <arousseau@gac-technology.com>"]
+authors = ["Alexandre Rousseau <contact@rousseau-alexandre.fr>"]
 
 [dependencies]
+colored = "1.6"
+# argparse = "*"

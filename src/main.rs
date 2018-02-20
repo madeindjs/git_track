@@ -1,6 +1,9 @@
+extern crate colored;
+
 use std::fs::File;
 use std::io::{BufReader, BufRead};
 use std::collections::HashMap;
+use colored::*;
 
 /// Open file & get Line to iterate on it
 fn get_logs() -> std::io::Lines<BufReader<File>> {
@@ -41,7 +44,7 @@ fn main() {
     for (branch, count) in counts_branchs {
         println!(
             "\t{}{}  {:.01}",
-            branch,
+            branch.bold(),
             // vertical align with spaces
             " ".repeat(max_space - branch.len()),
             (count as f64 / 60f64)
