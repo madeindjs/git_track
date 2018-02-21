@@ -15,11 +15,15 @@ use std::process;
 
 const LOG_FILEPATH : &str = ".git_track.log";
 
+/// Simple object to store arguments passed to command line
 struct Configuration {
+    /// name of branch to delete
     delete : String,
+    /// run this tool in daemon or not
     watch: bool,
 }
 
+/// Parse arguments passed to command line
 fn set_argparse() -> Configuration{
 
     let mut configuration = Configuration{delete: "".to_string(), watch: false};
@@ -53,49 +57,30 @@ fn get_logs() -> std::io::Lines<BufReader<File>> {
     };
 }
 
-
-
-fn main() {
-    let configuration = set_argparse();
-
-    if configuration.watch {
-        let mut a = Agenda::new();
-        // Run every second
-        a.add(Job::new(|| {
-            // add row here
-            let mut file = OpenOptions::new().append(true).open(LOG_FILEPATH).unwrap();
-            let _ = file.write(b"test\r\n");
-        }, "* * * * * *".parse().unwrap()));
-        loop {
-            a.run_pending();
-            std::thread::sleep(std::time::Duration::from_millis(500));
+/// Remove line matching with given log name
+fn remove_log(log_to_delete : String) {
+    // store logs contained in folder
+    let mut logs : Vec<String> = Vec::new();
+    for log in get_logs() {
+        let branch: String = log.unwrap();
+        // filter log to remove specified branch
+        if branch != log_to_delete {
+            logs.push(branch);
         }
     }
+    // open file in write mode (clean file)
+    let mut file = match File::create(LOG_FILEPATH) {
+        Ok(file) => file,
+        Err(_) => panic!(format!("Can't open '{}' file, check access rights", LOG_FILEPATH)),
+    };
 
-
-    // delete branch if asked
-    if !configuration.delete.is_empty() {
-        // store logs contained in folder
-        let mut logs : Vec<String> = Vec::new();
-        for log in get_logs() {
-            let branch: String = log.unwrap();
-            // filter log to remove specified branch
-            if branch != configuration.delete {
-                logs.push(branch);
-            }
-        }
-        // open file in write mode (clean file)
-        let mut file = match File::create(LOG_FILEPATH) {
-            Ok(file) => file,
-            Err(_) => panic!(format!("Can't open '{}' file, check access rights", LOG_FILEPATH)),
-        };
-
-        for log in logs {
-            let _ = file.write_all(format!("{}\r\n", log).as_bytes());
-        }
-
+    for log in logs {
+        let _ = file.write_all(format!("{}\r\n", log).as_bytes());
     }
+}
 
+/// Output a resume of time spent
+fn display_resume() {
     let mut counts_branchs: HashMap<String, u64> = HashMap::new();
     let mut max_space: usize = 0;
 
@@ -127,4 +112,34 @@ fn main() {
             (count as f64 / 60f64)
         );
     }
+}
+
+/// Watch this repository to store current branch each minutes
+fn watch_repository() {
+    let mut a = Agenda::new();
+    // Run every second
+    a.add(Job::new(|| {
+        // add row here
+        let mut file = OpenOptions::new().append(true).open(LOG_FILEPATH).unwrap();
+        let _ = file.write(b"test\r\n");
+    }, "* * * * * *".parse().unwrap()));
+    loop {
+        a.run_pending();
+        std::thread::sleep(std::time::Duration::from_millis(60000));
+    }
+}
+
+fn main() {
+    let configuration = set_argparse();
+
+    if configuration.watch {
+        watch_repository();
+    }
+
+    // delete branch if asked
+    if !configuration.delete.is_empty() {
+        remove_log(configuration.delete);
+    }
+
+    display_resume();
 }
