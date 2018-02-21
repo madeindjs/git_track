@@ -2,7 +2,17 @@
 name = "git_track"
 version = "0.1.0"
 authors = ["Alexandre Rousseau <contact@rousseau-alexandre.fr>"]
+description = "Report time spent on given git project"
+homepage = "https://github.com/madeindjs/git_track"
+repository = "https://github.com/madeindjs/git_track"
+keywords = ["git", "time-tracker"]
+categories = ["command-line-utilities"]
+license = "MIT"
+
+[badges]
+maintenance = { status = "as-is" }
 
 [dependencies]
 colored = "1.6"
 argparse = "*"
+

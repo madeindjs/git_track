@@ -3,7 +3,7 @@
 Report time spent on given git project
 
 ~~~bash
-$ ./git_track
+$ git_track
     master             0.8
     develop            3.5
     feature/fatec_dae  21.5
@@ -12,7 +12,7 @@ $ ./git_track
 You can remove log for a specifi branch using `--delete`
 
 ~~~bash
-$ ./git_track --delete master
+$ git_track --delete master
     develop            3.5
     feature/fatec_dae  21.5
 ~~~
@@ -30,7 +30,7 @@ Then clone this repository & build project with Cargo
 ~~~bash
 $ git clone https://github.com/madeindjs/git_track.git
 $ cd git_track
-$ cargo build --release
+$ cargo install
 ~~~
 
 Then move binary built in `<your_project_path>`
