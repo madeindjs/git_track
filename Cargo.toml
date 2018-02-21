@@ -5,4 +5,4 @@ authors = ["Alexandre Rousseau <contact@rousseau-alexandre.fr>"]
 
 [dependencies]
 colored = "1.6"
-# argparse = "*"
+argparse = "*"
