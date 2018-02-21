@@ -14,5 +14,5 @@ maintenance = { status = "as-is" }
 
 [dependencies]
 colored = "1.6"
-argparse = "*"
+argparse = "0.2.1"
 
