@@ -1,6 +1,7 @@
 extern crate argparse;
 extern crate colored;
 
+
 use argparse::{ArgumentParser, Store};
 use colored::*;
 use std::fs::File;
@@ -8,6 +9,8 @@ use std::io::{BufReader, BufRead, Write};
 use std::collections::HashMap;
 use std::env;
 use std::process;
+
+const LOG_FILEPATH : &str = ".git_track.log";
 
 struct Configuration {
     delete : String
@@ -30,18 +33,17 @@ fn set_argparse() -> Configuration{
 
 /// Open file & get Line to iterate on it
 fn get_logs() -> std::io::Lines<BufReader<File>> {
-    let log_file_path: &str = ".tickets_count.log";
-
-    match File::open(log_file_path) {
+    match File::open(LOG_FILEPATH) {
         Ok(file) => {
             return BufReader::new(file).lines();
         }
         Err(_) => {
-            println!("File '.tickets_count.log' was not found");
+            println!("File '{}' was not found", LOG_FILEPATH);
             println!("you should install this crontab");
             println!(
-                "\t* * * * * cd {0} && git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/' >> {0}/.tickets_count.log",
-                env::current_dir().unwrap().display()
+                "\t* * * * * cd {0} && git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/' >> {0}/{1}",
+                env::current_dir().unwrap().display(),
+                LOG_FILEPATH
             );
             process::exit(1);
         },
@@ -64,9 +66,9 @@ fn main() {
             }
         }
         // open file in write mode (clean file)
-        let mut file = match File::create(".tickets_count.log") {
+        let mut file = match File::create(LOG_FILEPATH) {
             Ok(file) => file,
-            Err(_) => panic!("Can't open '.tickets_count.log' file, check access rights"),
+            Err(_) => panic!(format!("Can't open '{}' file, check access rights", LOG_FILEPATH)),
         };
 
         for log in logs {
