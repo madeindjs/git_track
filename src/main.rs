@@ -1,13 +1,11 @@
 extern crate argparse;
 extern crate colored;
 extern crate git2;
-extern crate schedule;
 
 
 use argparse::{ArgumentParser, Store, StoreTrue};
 use colored::*;
 use git2::Repository;
-use schedule::{Agenda, Job};
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufRead, Write};
@@ -27,7 +25,6 @@ struct Configuration {
 
 /// Parse arguments passed to command line
 fn set_argparse() -> Configuration{
-
     let mut configuration = Configuration{delete: "".to_string(), watch: false};
     {  // this block limits scope of borrows by ap.refer() method
         let mut ap = ArgumentParser::new();
@@ -118,17 +115,14 @@ fn display_resume() {
 
 /// Watch this repository to store current branch each minutes
 fn watch_repository() {
-    let mut a = Agenda::new();
-    // Run every second
-    a.add(Job::new(|| {
-        let repo : Repository = initialize_repository();
-        let branch : String = get_current_branch(&repo);
-        // add row here
-        let mut file = OpenOptions::new().append(true).open(LOG_FILEPATH).unwrap();
-        let _ = file.write(format!("{}\r\n", branch).as_bytes());
-    }, "* * * * * *".parse().unwrap()));
     loop {
-        a.run_pending();
+        {// used to clean memory before
+            let repo : Repository = initialize_repository();
+            let branch : String = get_current_branch(&repo);
+            // add row here
+            let mut file = OpenOptions::new().append(true).open(LOG_FILEPATH).unwrap();
+            let _ = file.write(format!("{}\r\n", branch).as_bytes());
+        }
         std::thread::sleep(std::time::Duration::from_millis(60000));
     }
 }
