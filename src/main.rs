@@ -127,6 +127,7 @@ fn watch_repository() {
     }
 }
 
+/// Open current Git repository
 fn initialize_repository() -> Repository {
     match Repository::init(".") {
         Ok(repo) => repo,
@@ -135,7 +136,6 @@ fn initialize_repository() -> Repository {
 }
 
 fn get_current_branch(repo : &Repository) -> String {
-
     match repo.head() {
         Ok(reference) => {
             if reference.is_branch() {
@@ -153,8 +153,6 @@ fn get_current_branch(repo : &Repository) -> String {
 
 fn main() {
     let configuration : Configuration = set_argparse();
-
-
 
     if configuration.watch {
         watch_repository();
