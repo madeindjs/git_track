@@ -1,10 +1,12 @@
 extern crate argparse;
 extern crate colored;
+extern crate git2;
 extern crate schedule;
 
 
 use argparse::{ArgumentParser, Store, StoreTrue};
 use colored::*;
+use git2::Repository;
 use schedule::{Agenda, Job};
 use std::fs::File;
 use std::fs::OpenOptions;
@@ -119,9 +121,11 @@ fn watch_repository() {
     let mut a = Agenda::new();
     // Run every second
     a.add(Job::new(|| {
+        let repo : Repository = initialize_repository();
+        let branch : String = get_current_branch(&repo);
         // add row here
         let mut file = OpenOptions::new().append(true).open(LOG_FILEPATH).unwrap();
-        let _ = file.write(b"test\r\n");
+        let _ = file.write(format!("{}\r\n", branch).as_bytes());
     }, "* * * * * *".parse().unwrap()));
     loop {
         a.run_pending();
@@ -129,8 +133,34 @@ fn watch_repository() {
     }
 }
 
+fn initialize_repository() -> Repository {
+    match Repository::init(".") {
+        Ok(repo) => repo,
+        Err(_) => panic!("This is not a valid Git repository"),
+    }
+}
+
+fn get_current_branch(repo : &Repository) -> String {
+
+    match repo.head() {
+        Ok(reference) => {
+            if reference.is_branch() {
+                match reference.name() {
+                    Some(name) => return name.replace("refs/heads/", ""),
+                    None => panic!("Can't find name"),
+                }
+            }
+        },
+        Err(_) => panic!("az"),
+    }
+
+    return "".to_string();
+}
+
 fn main() {
-    let configuration = set_argparse();
+    let configuration : Configuration = set_argparse();
+
+
 
     if configuration.watch {
         watch_repository();
