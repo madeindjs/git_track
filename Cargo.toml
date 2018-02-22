@@ -1,8 +1,8 @@
 [package]
 name = "git_track"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Alexandre Rousseau <contact@rousseau-alexandre.fr>"]
-description = "Report time spent on given git project"
+description = "Log branch activity each minutes to get time spent report."
 homepage = "https://github.com/madeindjs/git_track"
 repository = "https://github.com/madeindjs/git_track"
 keywords = ["git", "time-tracker"]

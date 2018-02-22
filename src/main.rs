@@ -28,7 +28,7 @@ fn set_argparse() -> Configuration{
     let mut configuration = Configuration{delete: "".to_string(), watch: false};
     {  // this block limits scope of borrows by ap.refer() method
         let mut ap = ArgumentParser::new();
-        ap.set_description("will use a crontab & Git to log wich current branch you work on..");
+        ap.set_description("Log branch activity each minutes to get time spent report.");
         ap.refer(&mut configuration.delete).add_option(&["-d", "--delete"], Store, "Delete given branch");
         ap.refer(&mut configuration.watch).add_option(&["-w", "--watch"], StoreTrue, "Watch this repository");
         ap.parse_args_or_exit();

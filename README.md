@@ -1,6 +1,16 @@
 # git_track
 
-Report time spent on given git project
+Log branch activity each minutes to get time spent report.
+
+## Usage
+
+Start to `watch` your repository. This will create  *.git_track.log* file. Each minute, **Git_track** will log your current branch in this file.
+
+~~~bash
+$ git_track --watch
+~~~
+
+Then, to get a report juste enter `git_track`:
 
 ~~~bash
 $ git_track
@@ -9,7 +19,7 @@ $ git_track
     feature/fatec_dae  21.5
 ~~~
 
-You can remove log for a specifi branch using `--delete`
+You can remove log for a specifi branch using `--delete`:
 
 ~~~bash
 $ git_track --delete master
@@ -22,5 +32,3 @@ $ git_track --delete master
 ~~~bash
 $ cargo install git_track
 ~~~
-
-
