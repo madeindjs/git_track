@@ -1,5 +1,7 @@
 # git_track
 
+![Crate sticker](https://img.shields.io/crates/v/git_track.svg)
+
 Log time spent on each branch for a Git repository.
 
 ## Usage
