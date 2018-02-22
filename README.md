@@ -1,6 +1,6 @@
 # git_track
 
-Log branch activity each minutes to get time spent report.
+Log time spent on each branch for a Git repository.
 
 ## Usage
 
